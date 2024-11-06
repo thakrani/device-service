@@ -1,8 +1,8 @@
 
-Objective
+**Objective**
 Design a RESTful service to manage a device database, allowing operations such as adding, retrieving, updating, and deleting devices.
 
-Endpoints:
+**Endpoints**:
 
 POST /devices: Add a new device.
 GET /devices/{id}: Retrieve a device by its identifier.
@@ -12,7 +12,8 @@ DELETE /devices/{id}: Delete a device.
 GET /devices/search?brand={brand}: Search for devices by brand.
 
 
-Curls:
+**Curls**:
+
 Add Device:
 curl -X POST -H "Content-Type: application/json" -d '{"device_name": "Phone X", "device_brand": "BrandA"}' http://localhost:8080/devices
 
