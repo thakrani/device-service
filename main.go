@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"device-service/configs"
+	"device-service/db"
 
 	"github.com/gorilla/mux"
 )
@@ -16,9 +17,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
+	db, err := db.NewDB(*config)
+	if err != nil {
+		log.Fatal("Failed to connect to the database:", err)
+	}
+	defer db.Close()
 
 	r := mux.NewRouter()
-	router.InitializeRoutes(r)
+	router.InitializeRoutes(r, db)
 	addressPort := config.Port
 
 	log.Println("Starting server on :", addressPort)

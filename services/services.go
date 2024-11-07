@@ -31,7 +31,7 @@ func (s *DeviceService) GetDevice(id string) (models.Device, error) {
 }
 
 func (s *DeviceService) ListDevices() ([]models.Device, error) {
-	return s.repo.ListDevices(), nil
+	return s.repo.ListDevices()
 }
 
 func (s *DeviceService) DeleteDevice(id string) error {
@@ -43,11 +43,5 @@ func (s *DeviceService) UpdateDevice(id string, name *string, brand *string) (mo
 }
 
 func (s *DeviceService) SearchDeviceByBrand(brand string) ([]models.Device, error) {
-	var results []models.Device
-	for _, device := range s.repo.ListDevices() {
-		if device.DeviceBrand == brand {
-			results = append(results, device)
-		}
-	}
-	return results, nil
+	return s.repo.SearchDeviceByBrand(brand)
 }

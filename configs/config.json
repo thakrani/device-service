@@ -1,3 +1,6 @@
 {
-    "port": "8080"
+    "port": "8080",
+    "username": "your_password",
+    "password":"shivamthakrani",
+    "databaseName":"device_service"
 }
