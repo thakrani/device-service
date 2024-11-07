@@ -24,7 +24,7 @@ func main() {
 	defer db.Close()
 
 	r := mux.NewRouter()
-	router.InitializeRoutes(r, db)
+	router.InitializeRoutes(r, &db)
 	addressPort := config.Port
 
 	log.Println("Starting server on :", addressPort)

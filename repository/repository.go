@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"device-service/db"
 	"device-service/models"
 	"errors"
 	"time"
@@ -10,7 +11,7 @@ import (
 )
 
 type DeviceRepository struct {
-	DB *sql.DB
+	db db.IDB
 }
 
 type IDeviceRepository interface {
@@ -22,8 +23,8 @@ type IDeviceRepository interface {
 	SearchDeviceByBrand(brand string) ([]models.Device, error)
 }
 
-func NewDeviceRepository(db *sql.DB) IDeviceRepository {
-	return &DeviceRepository{DB: db}
+func NewDeviceRepository(db db.IDB) IDeviceRepository {
+	return &DeviceRepository{db: db}
 }
 
 func (r *DeviceRepository) AddDevice(name, brand string) (models.Device, error) {
@@ -36,7 +37,7 @@ func (r *DeviceRepository) AddDevice(name, brand string) (models.Device, error) 
 		CreatedAt:   createdAt,
 	}
 
-	_, err := r.DB.Exec(
+	_, err := r.db.Exec(
 		"INSERT INTO devices (id, device_name, device_brand, created_at) VALUES ($1, $2, $3, $4)",
 		id, name, brand, createdAt,
 	)
@@ -49,7 +50,7 @@ func (r *DeviceRepository) AddDevice(name, brand string) (models.Device, error) 
 
 func (r *DeviceRepository) GetDevice(id string) (models.Device, error) {
 	var device models.Device
-	err := r.DB.QueryRow("SELECT id, device_name, device_brand, created_at FROM devices WHERE id = $1", id).
+	err := r.db.QueryRow("SELECT id, device_name, device_brand, created_at FROM devices WHERE id = $1", id).
 		Scan(&device.ID, &device.DeviceName, &device.DeviceBrand, &device.CreatedAt)
 
 	if err == sql.ErrNoRows {
@@ -62,7 +63,7 @@ func (r *DeviceRepository) GetDevice(id string) (models.Device, error) {
 }
 
 func (r *DeviceRepository) ListDevices() ([]models.Device, error) {
-	rows, err := r.DB.Query("SELECT id, device_name, device_brand, created_at FROM devices")
+	rows, err := r.db.Query("SELECT id, device_name, device_brand, created_at FROM devices")
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +83,13 @@ func (r *DeviceRepository) ListDevices() ([]models.Device, error) {
 
 func (r *DeviceRepository) UpdateDevice(id string, name, brand *string) (models.Device, error) {
 	if name != nil {
-		_, err := r.DB.Exec("UPDATE devices SET device_name = $1 WHERE id = $2", *name, id)
+		_, err := r.db.Exec("UPDATE devices SET device_name = $1 WHERE id = $2", *name, id)
 		if err != nil {
 			return models.Device{}, err
 		}
 	}
 	if brand != nil {
-		_, err := r.DB.Exec("UPDATE devices SET device_brand = $1 WHERE id = $2", *brand, id)
+		_, err := r.db.Exec("UPDATE devices SET device_brand = $1 WHERE id = $2", *brand, id)
 		if err != nil {
 			return models.Device{}, err
 		}
@@ -97,12 +98,12 @@ func (r *DeviceRepository) UpdateDevice(id string, name, brand *string) (models.
 }
 
 func (r *DeviceRepository) DeleteDevice(id string) error {
-	_, err := r.DB.Exec("DELETE FROM devices WHERE id = $1", id)
+	_, err := r.db.Exec("DELETE FROM devices WHERE id = $1", id)
 	return err
 }
 
 func (r *DeviceRepository) SearchDeviceByBrand(brand string) ([]models.Device, error) {
-	rows, err := r.DB.Query("SELECT id, device_name, device_brand, created_at FROM  devices WHERE device_brand = $1", brand)
+	rows, err := r.db.Query("SELECT id, device_name, device_brand, created_at FROM  devices WHERE device_brand = $1", brand)
 	if err != nil {
 		return nil, err
 	}
