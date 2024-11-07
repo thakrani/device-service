@@ -1,6 +1,7 @@
 package router
 
 import (
+	"device-service/db"
 	"device-service/handlers"
 	"device-service/repository"
 	"device-service/services"
@@ -8,8 +9,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitializeRoutes(r *mux.Router) {
-	repo := repository.NewDeviceRepository()
+func InitializeRoutes(r *mux.Router, db db.IDB) {
+	repo := repository.NewDeviceRepository(db)
 	service := services.NewDeviceService(repo)
 	handler := handlers.NewDeviceHandler(service)
 	r.HandleFunc("/devices", handler.AddDevice).Methods("POST")

@@ -88,7 +88,7 @@ func (_m *IDeviceRepository) GetDevice(id string) (models.Device, error) {
 }
 
 // ListDevices provides a mock function with given fields:
-func (_m *IDeviceRepository) ListDevices() []models.Device {
+func (_m *IDeviceRepository) ListDevices() ([]models.Device, error) {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
@@ -96,6 +96,10 @@ func (_m *IDeviceRepository) ListDevices() []models.Device {
 	}
 
 	var r0 []models.Device
+	var r1 error
+	if rf, ok := ret.Get(0).(func() ([]models.Device, error)); ok {
+		return rf()
+	}
 	if rf, ok := ret.Get(0).(func() []models.Device); ok {
 		r0 = rf()
 	} else {
@@ -104,7 +108,43 @@ func (_m *IDeviceRepository) ListDevices() []models.Device {
 		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// SearchDeviceByBrand provides a mock function with given fields: brand
+func (_m *IDeviceRepository) SearchDeviceByBrand(brand string) ([]models.Device, error) {
+	ret := _m.Called(brand)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SearchDeviceByBrand")
+	}
+
+	var r0 []models.Device
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) ([]models.Device, error)); ok {
+		return rf(brand)
+	}
+	if rf, ok := ret.Get(0).(func(string) []models.Device); ok {
+		r0 = rf(brand)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.Device)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(brand)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // UpdateDevice provides a mock function with given fields: id, name, brand

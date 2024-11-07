@@ -7,8 +7,13 @@ import (
 )
 
 type Config struct {
-	Port string `json:"port"`
+	Port         string `json:"port"`
+	Password     string `json:"username"`
+	Username     string `json:"password"`
+	DatabaseName string `json:"databaseName"`
 }
+
+var config Config
 
 func LoadConfig(filePath string) (*Config, error) {
 	// Open the config file
@@ -17,9 +22,6 @@ func LoadConfig(filePath string) (*Config, error) {
 		return nil, fmt.Errorf("could not open config file: %v", err)
 	}
 	defer file.Close()
-
-	// Create an empty Config struct
-	var config Config
 
 	// Decode the JSON into the struct
 	decoder := json.NewDecoder(file)

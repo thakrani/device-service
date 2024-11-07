@@ -35,3 +35,21 @@ curl -X DELETE http://localhost:8080/devices/{id}
 
 - Search Device by Brand:
 curl -X GET "http://localhost:8080/devices/search/{brand}"
+
+
+
+**Mocks**
+cd repository
+mockery --name=IDeviceRepository --case=snake --output=../mocks --outpkg=mocks
+cd ..
+cd services
+mockery --name=IDeviceService --case=snake --output=../mocks --outpkg=mocks
+cd ..
+cd db
+mockery --name=IDB --case=snake --output=../mocks --outpkg=mocks
+cd ..
+
+** Install Postgres**
+brew services start postgresql@15
+brew install postgresql@15
+
