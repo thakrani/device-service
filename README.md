@@ -57,3 +57,5 @@ CREATE ROLE postgres WITH LOGIN SUPERUSER CREATEDB CREATEROLE REPLICATION PASSWO
 Create Table DB script in db folder
 
 Update username and password in config.json to connect to db.
+
+FINAL COMMIT 18:19:00 Nov 7
