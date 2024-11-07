@@ -47,6 +47,13 @@ cd db
 mockery --name=IDB --case=snake --output=../mocks --outpkg=mocks
 cd ..
 
-** Install Postgres**
+**Install Postgres**
 brew services start postgresql@15
 brew install postgresql@15
+brew services start postgresql@15
+sudo -u postgres psql
+psql postgres
+CREATE ROLE postgres WITH LOGIN SUPERUSER CREATEDB CREATEROLE REPLICATION PASSWORD 'yourpassword';
+Create Table DB script in db folder
+
+Update username and password in config.json to connect to db.
