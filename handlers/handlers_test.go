@@ -89,9 +89,13 @@ func TestDeleteDevice(t *testing.T) {
 
 	mockService.On("DeleteDevice", "1").Return(nil)
 
+	router := mux.NewRouter()
+	router.HandleFunc("/devices/{id}", handler.DeleteDevice).Methods(http.MethodDelete)
+
 	req := httptest.NewRequest(http.MethodDelete, "/devices/1", nil)
 	rr := httptest.NewRecorder()
-	handler.DeleteDevice(rr, req)
+
+	router.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusNoContent, rr.Code)
 	mockService.AssertExpectations(t)
@@ -105,15 +109,19 @@ func TestUpdateDevice(t *testing.T) {
 	mockService.On("UpdateDevice", "1", mock.AnythingOfType("*string"), mock.AnythingOfType("*string")).Return(updatedDevice, nil)
 
 	reqBody := `{"device_name": "iPhone 14", "device_brand": "Apple"}`
-	req := httptest.NewRequest(http.MethodPut, "/devices/1", nil)
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req := httptest.NewRequest(http.MethodPut, "/devices/1", strings.NewReader(reqBody))
+	req.Header.Set("Content-Type", "application/json")
+
+	router := mux.NewRouter()
+	router.HandleFunc("/devices/{id}", handler.UpdateDevice).Methods(http.MethodPut)
 
 	rr := httptest.NewRecorder()
-	handler.UpdateDevice(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
 	var responseDevice models.Device
-	json.NewDecoder(rr.Body).Decode(&responseDevice)
+	err := json.NewDecoder(rr.Body).Decode(&responseDevice)
+	assert.NoError(t, err)
 	assert.Equal(t, updatedDevice, responseDevice)
 	mockService.AssertExpectations(t)
 }
@@ -124,17 +132,22 @@ func TestSearchDeviceByBrand(t *testing.T) {
 
 	devices := []models.Device{
 		{ID: "1", DeviceName: "iPhone", DeviceBrand: "Apple"},
-		{ID: "2", DeviceName: "Galaxy", DeviceBrand: "Samsung"},
 	}
 	mockService.On("SearchDeviceByBrand", "Apple").Return(devices, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/devices/search?brand=Apple", nil)
+	req := httptest.NewRequest(http.MethodGet, "/devices/search/Apple", nil)
+	req.Header.Set("Content-Type", "application/json")
+
+	router := mux.NewRouter()
+	router.HandleFunc("/devices/search/{brand}", handler.SearchDeviceByBrand).Methods(http.MethodGet)
+
 	rr := httptest.NewRecorder()
-	handler.SearchDeviceByBrand(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
 	var responseDevices []models.Device
-	json.NewDecoder(rr.Body).Decode(&responseDevices)
+	err := json.NewDecoder(rr.Body).Decode(&responseDevices)
+	assert.NoError(t, err)
 	assert.Equal(t, devices, responseDevices)
 	mockService.AssertExpectations(t)
 }
