@@ -1,4 +1,5 @@
 CREATE DATABASE device_service;
+
 \c device_service;
 
 
