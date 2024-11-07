@@ -49,7 +49,7 @@ cd db
 mockery --name=IDB --case=snake --output=../mocks --outpkg=mocks
 cd ..
 
-** Install Postgres**
+**Install Postgres**
 brew services start postgresql@15
 brew install postgresql@15
 

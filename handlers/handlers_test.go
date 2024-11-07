@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"device-service/mocks"
 	"device-service/models"
+	"device-service/services/mocks"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -135,11 +135,11 @@ func TestSearchDeviceByBrand(t *testing.T) {
 	}
 	mockService.On("SearchDeviceByBrand", "Apple").Return(devices, nil)
 
-	req := httptest.NewRequest(http.MethodGet, "/devices/search/Apple", nil)
+	req := httptest.NewRequest(http.MethodGet, "/devices/search?brand=Apple", nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	router := mux.NewRouter()
-	router.HandleFunc("/devices/search/{brand}", handler.SearchDeviceByBrand).Methods(http.MethodGet)
+	router.HandleFunc("/devices/search", handler.SearchDeviceByBrand).Methods(http.MethodGet)
 
 	rr := httptest.NewRecorder()
 	router.ServeHTTP(rr, req)
