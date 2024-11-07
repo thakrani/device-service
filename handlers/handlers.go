@@ -95,8 +95,7 @@ func (h *DeviceHandler) UpdateDevice(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DeviceHandler) SearchDeviceByBrand(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	brand := vars["brand"]
+	brand := r.URL.Query().Get("brand")
 
 	devices, err := h.services.SearchDeviceByBrand(brand)
 	if err != nil {
